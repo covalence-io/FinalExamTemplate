@@ -1,165 +1,74 @@
-# TypeScript React Express ESBuild Boilerplate
+# Covalence Final Exam
 
-Welcome to the TypeScript React Express ESBuild boilerplate, tailored for budding developers learning to craft MERN CRUD applications. However, this boilerplate is also ideal for anyone aiming to switch gears and utilize ESBuild over the conventional webpack.
+## Objective
 
-# Table Of Contents
+Your objective is to build a full-stack web application that interacts with a database of books, in the span of 4 hours. You'll need to create a REST API that can receive requests and respond appropriately, and a React front-end that can display information from your API.
 
--   [Overview](#overview)
--   [Features](#features)
--   [Getting Started](#getting-started)
-    -   [1. Clone the Repository](#1-clone-the-repository)
-    -   [2. Install Dependencies](#2-install-dependencies)
-    -   [3. Running in Development](#3-running-in-development)
--   [Directory Structure](#directory-structure)
-    -   [Top-Level Overview](#top-level-overview)
--   [Building for Production](#building-for-production)
-    -   [1. Building for Production](#1-building-for-production)
-    -   [2. Running in Production](#2-running-in-production)
--   [YouTube Companion Videos](#youtube-companion-videos)
--   [Why ESBuild over Webpack?](#why-esbuild-over-webpack)
--   [Contributions](#contributions)
+## Setting up the project ahead of time
 
-## Overview
+You will use this boilerplate as your starting point. Dependencies you will need have been installed, but go ahead and install any dependencies not otherwise listed in the `package.json` (you will need to install all passport libraries and types if you choose to take the exam using passport).
 
-This boilerplate is designed with simplicity and efficiency in mind. It leverages ESBuild, known for its speed and ease of configuration, to bundle your JavaScript and styles. It provides a structured starting point for both client and server development using popular technologies like React, Express, and TypeScript.
+Using the [`setup.sql`](./setup.sql) file at the root of this repo, initialize your database tables and insert the sample data.
 
-## Features
+Setup a `.env` file and make sure that all the values in that and the config directory match.
 
--   **React**: For crafting intuitive UIs.
--   **Express**: A minimalist web framework for building the server-side.
--   **TypeScript**: Bringing strong typing to JavaScript, enhancing maintainability and developer experience.
--   **ESBuild**: A revolutionary fast JavaScript bundler and minifier.
--   **Bootstrap SASS**: Empower your projects with the world's most popular CSS framework, now in its SASS variant. Tailor designs seamlessly with variables and mixins.
+You may also include (for the client-side) a fetch helping service, like the included sample. You may also include (for the server-side) your authentication middlewares, like a token validating middleware (sample included), login middleware, or Passport middlewares + setup (if you choose to use Passport).
 
-    _Note_: While this boilerplate uses Bootstrap SASS, the flexibility of ESBuild means it's straightforward to switch plugins. For instance, you can easily incorporate PostCSS with TailwindCSS or any other preferred styling solution.
+**PRO-TIP: Once you have this starter project assembled, feel free to make your own github repo with _that_ as your starter template. Upon a practice or actual attempt, you can clone that instead, saving yourself the hassle of recopying the above.** Also feel free to get your Postman collection organized ahead of time.
 
-## Getting Started
+## Exam Requirements
 
-1. **Clone the Repository**
+### REST API
 
-    ```sh
-    git clone https://github.com/covalence-io/ts-react-express-esbuild.git
-    cd ts-react-express-esbuild
-    ```
+You'll need to connect your database to your backend, and have API routes that respond with the typical CRUD operations for books and getting categories. You'll create auth routes for your login and registration functionalities.
 
-2. **Install Dependencies**
+#### API Routes & Behaviors
 
-    ```sh
-    npm install
-    ```
+-   Categories
+    -   Support getting all categories
+-   Books
+    -   Support getting all books, creating a new book, and getting, updating, and deleting a single book
+    -   Follow RESTful principles when defining routes for the above behaviors. This means that anything altering the database (creating, updating, deleting) should be behind an auth check; as a personal preference, you may also choose to protect the get requests to force users to be logged in to view book data.
+-   Login
+    -   Allow a user to login with email and password, and create a token upon login
+-   Register
+    -   Allow a user to register themselves and receive a token upon successful registration
 
-3. **Running in Development**
-   Start both client and server in development mode:
-    ```sh
-    npm run dev
-    ```
+### React Front-End
 
-## Directory Structure
+Create an React site in the client folder of your project
 
-Understanding the project's structure is crucial for efficiently navigating and utilizing this boilerplate. Here's a detailed breakdown of the directory tree:
+-   Use routing
+-   Use your utility fetch service (like fetcher) to interact with your API
+-   Use localStorage to handle front-end auth
 
-```
-dist/
-├─ server.js
-esbuild/
-├─ client.dev.mjs
-├─ server.dev.mjs
-├─ client.prod.mjs
-├─ server.prod.mjs
-node_modules/
-public/
-├─ static/
-│  ├─ bundle.js
-├─ index.html
-├─ favicon.ico
-src/
-├─ client/
-│  ├─ styles/
-│  │  ├─ app.scss
-│  ├─ App.tsx
-│  ├─ index.tsx
-│  ├─ tsconfig.json
-├─ server/
-│  ├─ server.ts
-│  ├─ tsconfig.json
-.gitignore
-nodemon.json
-package-lock.json
-package.json
-README.md
-tsconfig.json
-```
+#### Required Views
 
-### Top-Level Overview
+-   /
+    -   Show a page welcoming the user to your book store
+    -   Have a link to your book listings
+    -   Have a link to login/register views - **NOTE**: if you would like, feel free to combine the login & register into a singular view
+-   /login
+    -   Show a page with input fields for email and password to login an existing user. It should send the user back to the list view upon success.
+-   /register
+    -   Show a page with input fields for email and password to register a user new user. It should send the user back to the list view upon success.
+-   /books
+    -   Show a page listing the books you have available. The listing should include the title, author, price (formatted as currency), and category name for each book.
+    -   Each item in the listing should have a link to the single view
+-   /books/new
+    -   Show a page with input fields for title, author, and price. You will also need to have a select (drop-down) box that shows all categories in the system, allowing the book to be assigned a category. The database will not allow a book to be created without a category.
+    -   Saving the new book successfully should send the user back to the list view.
+    -   Should require user to be logged in
+-   /books/:id/update
+    -   Show a page with input fields prepopulated with the specified book data. The page should include input fields for title, author, and price. You will also need to have a select (drop-down) box that shows all categories in the system, allowing the book to be assigned to a different category.
+    -   Saving the updated book successfully should send the user back to either the single view or the list view (your choice).
+    -   Should require user to be logged in.
+-   /books/:id
+    -   Show a page that displays information for just the indicated book. The page should include the title, author, price (formatted as currency), and category name for the book.
+    -   Should also contain Edit and Delete buttons/icons
+    -   Clicking the delete button should delete the book and send them to the book list
+    -   Clicking the edit button should send the user to the edit book component
 
--   **`dist/`**: The output directory where your server-side TypeScript files get compiled to JavaScript.
+## Taking the Exam & Submission Instructions
 
-    -   `server.js`: The compiled server-side entry point. **Note**: This file and the entire `dist/` directory are not tracked on GitHub as they represent compiled production code.
-
--   **`esbuild/`**: Houses configuration files for the ESBuild bundler.
-
-    -   `client.dev.mjs`: ESBuild configuration for client-side development.
-    -   `server.dev.mjs`: ESBuild configuration for server-side development.
-    -   `client.prod.mjs`: ESBuild configuration for client-side production.
-    -   `server.prod.mjs`: ESBuild configuration for server-side production.
-
--   **`node_modules/`**: Standard directory for all installed npm packages.
-
--   **`public/`**: Serves static files and the main `index.html` for your React application.
-
-    -   `static/`: Contains bundled output files for the client side.
-        -   `bundle.js`: Bundled JavaScript for the client. **Note**: The bundled `bundle.js` is not tracked on GitHub as it is a dynamically generated file based on the source code.
-    -   `index.html`: The main HTML file that serves as a shell for your React app.
-    -   `favicon.ico`: The little website icon that appears in your tab/bookmarks.
-
--   **`src/`**: The core of your application's source code, both client-side and server-side.
-
-    -   `client/`: Contains all client-side React components and styles.
-        -   `styles/`: Directory for all your SCSS files.
-            -   `app.scss`: Main style file for your application.
-        -   `App.tsx`: The main React component for your application.
-        -   `index.tsx`: Client-side entry point.
-        -   `tsconfig.json`: TypeScript configuration specific to the client side.
-    -   `server/`: Houses server-side logic using Express.
-        -   `server.ts`: Entry point for the server.
-        -   `tsconfig.json`: TypeScript configuration specific to the server side.
-
--   **`.gitignore`**: Lists files and directories that should not be tracked by Git. This includes the compiled outputs like those in the `dist/` directory and dynamically generated bundles like `app.js`.
-
--   **`nodemon.json`**: Configuration for Nodemon, a utility that monitors changes in your server code and automatically restarts the server.
-
--   **`package-lock.json`**: Automatically generated file that describes the exact tree that was generated in `node_modules` as a result of running `npm install`.
-
--   **`package.json`**: Lists package dependencies and contains various metadata about the project, like scripts.
-
--   **`README.md`**: This very file, offering a guide to the project.
-
--   **`tsconfig.json`**: The root TypeScript configuration file.
-
-## Building for Production
-
-The scripts for production builds ensure optimized performance for deployment.
-
-1. **Building for Production**
-
-    ```sh
-    npm run build
-    ```
-
-2. **Running in Production**
-    ```sh
-    npm start
-    ```
-
-## YouTube Companion Videos
-
-I coded this boilerplate out across a few YouTube videos if you want the from-scratch-to-end-product building of this repo. Watch and subscribe!
-[https://youtu.be/3tEUVpyRYTg](https://youtu.be/3tEUVpyRYTg)
-
-## Why ESBuild over Webpack?
-
-Webpack has been the go-to bundler for many projects over the years. However, ESBuild brings in significant speed improvements due to its Go-based architecture. This makes the build and development processes much faster, enhancing developer experience, especially in larger projects. This boilerplate is meant to introduce developers to this efficient tool and encourage exploration beyond traditional tools.
-
-## Contributions
-
-Feel free to raise issues, send pull requests, or provide feedback to improve this boilerplate. We welcome collaboration and suggestions to make this a more effective learning tool for our students and the community.
+Breathe, and get in a comfortable environment. Let an instructor know your official start time. You're required to do a commit _at least_ every half hour as you go along. When you are finished, make sure you have pushed your final commits to github.
