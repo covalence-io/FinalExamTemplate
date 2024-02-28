@@ -1,0 +1,710 @@
+{
+	"info": {
+		"_postman_id": "ba605e8f-3140-40ae-b66d-9e8dbfd28f6a",
+		"name": "Bookstore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5437402"
+	},
+	"item": [
+		{
+			"name": "/auth",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Registering returns a token string or an object with a token string in it\", function () {",
+									"    const data = pm.response.json();",
+									"",
+									"    const isString = typeof data === 'string';",
+									"",
+									"    if (isString) {",
+									"        const [header, payload, signature] = data.split('.');",
+									"        const isJWT = header.substring(0,2) === 'ey';",
+									"        pm.expect(isJWT).to.eql(true);",
+									"",
+									"        if (isJWT) {",
+									"            pm.collectionVariables.set('TOKEN', data);",
+									"        }",
+									"    } else {",
+									"        const token = data.token;",
+									"        const [header, payload, signature] = token.split('.');",
+									"        const isJWT = header.substring(0,2) === 'ey';",
+									"        pm.expect(isJWT).to.eql(true);",
+									"",
+									"        if (isJWT) {",
+									"            pm.collectionVariables.set('TOKEN', token);",
+									"        }",
+									"    }",
+									"",
+									"    const { email, password } = JSON.parse(pm.request.body.raw);",
+									"    pm.collectionVariables.set('NEW_USER_EMAIL', email);",
+									"    pm.collectionVariables.set('NEW_USER_PASSWORD', password);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{$randomEmail}}\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Logging in returns a token string or an object with a token string in it\", function () {",
+									"    const data = pm.response.json();",
+									"",
+									"    const isString = typeof data === 'string';",
+									"",
+									"    if (isString) {",
+									"        const [header, payload, signature] = data.split('.');",
+									"        const isJWT = header.substring(0,2) === 'ey';",
+									"        pm.expect(isJWT).to.eql(true);",
+									"",
+									"        if (isJWT) {",
+									"            pm.collectionVariables.set('TOKEN', data);",
+									"        }",
+									"    } else {",
+									"        const token = data.token;",
+									"        const [header, payload, signature] = token.split('.');",
+									"        const isJWT = header.substring(0,2) === 'ey';",
+									"        pm.expect(isJWT).to.eql(true);",
+									"",
+									"        if (isJWT) {",
+									"            pm.collectionVariables.set('TOKEN', token);",
+									"        }",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{NEW_USER_EMAIL}}\",\n    \"password\": \"{{NEW_USER_PASSWORD}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "/api",
+			"item": [
+				{
+					"name": "/books",
+					"item": [
+						{
+							"name": "Get All Books",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response returns an array of book objects\", function () {",
+											"    const data = pm.response.json();",
+											"    const dataIsArray = Array.isArray(data);",
+											"    const [firstBook] = data;",
+											"",
+											"    const { id, title } = firstBook;",
+											"",
+											"    const idIsDefined = typeof id !== \"undefined\";",
+											"    const titleIsDefined = typeof title !== \"undefined\";",
+											"",
+											"    pm.expect(dataIsArray && idIsDefined && titleIsDefined).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/books",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"books"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Book",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Creating a book returns a status code of 200 or 201\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+											"});",
+											"",
+											"pm.test(\"Optionally, creating a book returns the new book's id\", function () {",
+											"    const data = pm.response.json();",
+											"",
+											"    if (data.id) {",
+											"        pm.collectionVariables.set('NEW_BOOK_ID', data.id);",
+											"    }",
+											"",
+											"    const { author } = JSON.parse(pm.request.body.raw);",
+											"    pm.collectionVariables.set('ORIGINAL_BOOK_AUTHOR', author);",
+											"",
+											"    pm.expect(data.id).to.not.be.undefined;",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"{{$randomBsBuzz}}\",\n    \"category_id\": 2,\n    \"price\": 9.99,\n    \"author\": \"{{$randomFullName}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/books/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"books",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get One Book",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response returns a book object\", function () {",
+											"    const data = pm.response.json();",
+											"",
+											"    const { id, title } = data;",
+											"",
+											"    const idIsDefined = typeof id !== \"undefined\";",
+											"    const titleIsDefined = typeof title !== \"undefined\";",
+											"",
+											"    pm.expect(idIsDefined && titleIsDefined).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/books/{{NEW_BOOK_ID}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"books",
+										"{{NEW_BOOK_ID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Book",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Updating the book returns a status code of 200 or 201\", function () {",
+											"    const { author } = JSON.parse(pm.request.body.raw);",
+											"    pm.collectionVariables.set('NEW_BOOK_AUTHOR', author);",
+											"",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"category_id\": 2,\n    \"title\": \"{{$randomBs}}\",\n    \"author\": \"{{$randomFullName}} {{$randomLastName}}\",\n    \"price\": 9.99\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/books/{{NEW_BOOK_ID}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"books",
+										"{{NEW_BOOK_ID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete One Book",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/books/{{NEW_BOOK_ID}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"books",
+										"{{NEW_BOOK_ID}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "/categories",
+					"item": [
+						{
+							"name": "Get All Categories",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response returns an array of category objects\", function () {",
+											"    const data = pm.response.json();",
+											"    const dataIsArray = Array.isArray(data);",
+											"    const [firstCategory] = data;",
+											"",
+											"    const { id, name } = firstCategory;",
+											"",
+											"    const idIsDefined = typeof id !== \"undefined\";",
+											"    const nameIsDefined = typeof name !== \"undefined\";",
+											"",
+											"    pm.expect(dataIsArray && idIsDefined && nameIsDefined).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/categories",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "deliberately failing tests",
+			"item": [
+				{
+					"name": "Get Book With Invalid ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"If a book does not exist, status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/books/999999999",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"books",
+								"999999999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Book Without Auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Attempting to create a book without authentication returns a status code of 401 or 403\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([401, 403]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"{{$randomBsBuzz}}\",\n    \"category_id\": 2,\n    \"price\": 9.99,\n    \"author\": \"{{$randomFullName}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/books/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"books",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Book Without Auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Attempting to update a book without authentication returns a status code of 401 or 403\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([401, 403]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"{{$randomBsBuzz}}\",\n    \"category_id\": 2,\n    \"price\": 9.99,\n    \"author\": \"{{$randomFullName}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/books/999999999",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"books",
+								"999999999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deleting Book Without Auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Attempting to delete a book without authentication returns a status code of 401, or 403\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([401, 403]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/books/999999999",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"books",
+								"999999999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login With Bad Credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Logging in with invalid credentials returns a status code 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"yeaaaaahhhhhhh\",\n    \"password\": \"boooiiiiiiiiiiiiii\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{TOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "TOKEN",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "NEW_USER_EMAIL",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "NEW_USER_PASSWORD",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "NEW_BOOK_ID",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "NEW_BOOK_AUTHOR",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "ORIGINAL_BOOK_AUTHOR",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
