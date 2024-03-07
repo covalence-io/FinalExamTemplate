@@ -1,38 +1,45 @@
 # Covalence Final Exam
+
 &nbsp;
+
 ```
 
- _____                 _                     
-/  __ \               | |                    
-| /  \/ _____   ____ _| | ___ _ __   ___ ___ 
+ _____                 _
+/  __ \               | |
+| /  \/ _____   ____ _| | ___ _ __   ___ ___
 | |    / _ \ \ / / _` | |/ _ \ '_ \ / __/ _ \
 | \__/\ (_) \ V / (_| | |  __/ | | | (_|  __/
  \____/\___/ \_/ \__,_|_|\___|_| |_|\___\___|
-                                             
-                                             
-______ _             _                       
-|  ___(_)           | |                      
-| |_   _ _ __   __ _| |                      
-|  _| | | '_ \ / _` | |                      
-| |   | | | | | (_| | |                      
-\_|   |_|_| |_|\__,_|_|                      
-                                             
-                                             
- _____                                       
-|  ___|                                      
-| |____  ____ _ _ __ ___                     
-|  __\ \/ / _` | '_ ` _ \                    
-| |___>  < (_| | | | | | |                   
-\____/_/\_\__,_|_| |_| |_|                   
-                                             
-                                             
+
+
+______ _             _
+|  ___(_)           | |
+| |_   _ _ __   __ _| |
+|  _| | | '_ \ / _` | |
+| |   | | | | | (_| | |
+\_|   |_|_| |_|\__,_|_|
+
+
+ _____
+|  ___|
+| |____  ____ _ _ __ ___
+|  __\ \/ / _` | '_ ` _ \
+| |___>  < (_| | | | | | |
+\____/_/\_\__,_|_| |_| |_|
+
+
 
 ```
+
 &nbsp;
 
 ## Objective
 
 Your objective is to build a full-stack web application that interacts with a database of books, in the span of 4 hours. You'll need to create a REST API that can receive requests and respond appropriately, and a React front-end that can display information from your API.
+
+## High Level Overview
+
+[![](https://img.youtube.com/vi/H0u6CV0WQRg/0.jpg)](https://youtu.be/H0u6CV0WQRg)
 
 ## Setting up the project ahead of time
 

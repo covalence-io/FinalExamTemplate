@@ -12,7 +12,7 @@ CREATE TABLE Books (
   price DECIMAL(5,2) NOT NULL DEFAULT '0.00',
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  FOREIGN KEY (categoryid) REFERENCES Categories (id)
+  FOREIGN KEY (category_id) REFERENCES Categories (id)
 );
 
 CREATE TABLE Users (
